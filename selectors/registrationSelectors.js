@@ -13,4 +13,5 @@ module.exports.registrationSelectors = {
   agreementCheckboxLabel: 'I have read and agree to the',
   createAccountButton: 'Continue',
   successMessage: 'Your Account Has Been Created!',
+  welocmeBackMessage: 'Welcome back '
   };
