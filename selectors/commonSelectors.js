@@ -1,3 +1,3 @@
-module.exports.registrationSelectors = {
-  continueButton: 'Continue',
+module.exports.commonSelectors = {
+  continueButton: 'Continue'
   };
