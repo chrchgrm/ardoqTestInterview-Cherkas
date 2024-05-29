@@ -47,7 +47,7 @@ test('TC1: Registering a new account', async ({ page }) => {
   await page.locator(registration.cityInput).fill(user.city);
   await page.locator(registrationSelectors.countryIdSelect).selectOption(String(countryId));
 
-  await page.waitForTimeout(3000); // Pause for 3 seconds
+  await page.waitForTimeout(3000); // Pause for 3 seconds to make sure that zones dropdown had time to adjust
 
   await page.locator(registration.zoneIdSelect).selectOption({ index: 1 });
   await page.locator(registration.postcodeInput).click();
@@ -67,9 +67,15 @@ test('TC1: Registering a new account', async ({ page }) => {
 
   await page.getByRole('link', { name: commonSelectors.continueButton }).click();
 
-  // TC2: Verify that the account was created successfully
-  await expect(page.locator(mainPageSelectors.welcomeMessage)).toContainText(registration.welocmeBackMessage + user.firstName);
-  await page.getByRole('link', { name: myAccountSelectors.accountDashboardButton }).click();
+  const cookies = await page.context().cookies();
+  await page.context().addCookies(cookies);
+  global.authCookies = cookies;
+});
+
+
+test('TC2: - Verify that the account was created successfully and the new user is logged in', async ({ page }) => {
+  await page.context().addCookies(global.authCookies);
+  await page.goto('https://automationteststore.com/index.php?rt=account/account');
   await expect(page.locator(myAccountSelectors.mainHeader)).toContainText(user.firstName);
   await expect(page.locator(myAccountSelectors.dashTilesRow)).toBeVisible();
   await expect(page.locator(myAccountSelectors.dashTileAddressBook)).toContainText(accountData.newAccount.addressBookNumber);
