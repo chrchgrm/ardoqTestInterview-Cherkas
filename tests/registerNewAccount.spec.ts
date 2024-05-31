@@ -5,15 +5,16 @@ import { registrationSelectors } from '../selectors/registrationSelectors';
 import { generateRandomPassword } from '../utils/helpers';
 import { myAccountSelectors } from '../selectors/myAccountSelectors';
 const { urls, userData, accountData } = require('../test-data/testData');
-const { generateRandomString, generateRandomEmail, generateRandomAddress, generateRandomCountryId } = require('../utils/helpers');
+const { generateRandomInteger, generateRandomString, generateRandomEmail, generateRandomAddress, countNumberOfOptions } = require('../utils/helpers');
 
 const username = generateRandomString(8);
 const email = generateRandomEmail(username);
 const password = generateRandomPassword(8);
 const address = generateRandomAddress();
-const countryId = generateRandomCountryId();
 const registration = registrationSelectors;
 const user = userData.newUser;
+var regionIndex = 1;
+var countryIndex = 1;
 
 test.describe.configure({ mode: 'serial' });
 let page: Page;
@@ -45,11 +46,18 @@ test('TC1: Registering a new account', async ({ page }) => {
   await page.locator(registration.addressInput).fill(address);
   await page.locator(registration.cityInput).click();
   await page.locator(registration.cityInput).fill(user.city);
-  await page.locator(registrationSelectors.countryIdSelect).selectOption(String(countryId));
 
-  await page.waitForTimeout(3000); // Pause for 3 seconds to make sure that zones dropdown had time to adjust
+  //Choosing a random value in the Country dropdown
+  const optionsNumCountry = await countNumberOfOptions(page, registrationSelectors.countryIdSelect);
+  countryIndex = generateRandomInteger(1, optionsNumCountry);
+  await page.locator(registration.countryIdSelect).selectOption({ index: countryIndex });
 
-  await page.locator(registration.zoneIdSelect).selectOption({ index: 1 });
+  //Choosing a random value in the Region / State dropdown
+  await page.waitForTimeout(3000); 
+  const optionsNumRegion = await countNumberOfOptions(page, registration.zoneIdSelect);
+  regionIndex = generateRandomInteger(1, optionsNumRegion);
+  await page.locator(registration.zoneIdSelect).selectOption({ index: regionIndex });
+
   await page.locator(registration.postcodeInput).click();
   await page.locator(registration.postcodeInput).fill(String(user.postCode));
   await page.locator(registration.loginnameInput).click();
