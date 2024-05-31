@@ -1,5 +1,6 @@
   module.exports.urls = {
-    mainPage: "https://automationteststore.com/"
+    mainPage: "https://automationteststore.com/",
+    accountPage: "https://automationteststore.com/index.php?rt=account/account"
   };
   module.exports.userData = {
     newUser: {

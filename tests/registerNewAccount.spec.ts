@@ -75,7 +75,7 @@ test('TC1: Registering a new account', async ({ page }) => {
 
 test('TC2: - Verify that the account was created successfully and the new user is logged in', async ({ page }) => {
   await page.context().addCookies(global.authCookies);
-  await page.goto('https://automationteststore.com/index.php?rt=account/account');
+  await page.goto(urls.accountPage);
   await expect(page.locator(myAccountSelectors.mainHeader)).toContainText(user.firstName);
   await expect(page.locator(myAccountSelectors.dashTilesRow)).toBeVisible();
   await expect(page.locator(myAccountSelectors.dashTileAddressBook)).toContainText(accountData.newAccount.addressBookNumber);
